@@ -1,24 +1,61 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, ShoppingCart, Star, Plus, Minus, Shield, Truck, Leaf, Heart, Share2 } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
 import ProductCard from '../components/ProductCard'
 import { PRODUCTS } from '../utils/data'
+import { fetchProductById } from '../services/productService'
 import toast from 'react-hot-toast'
 
 export default function ProductDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { addToCart, toggleWishlist, isInWishlist } = useCart()
-  const [qty, setQty] = useState(1)
+  const location = useLocation()
+  const { items, addToCart, removeFromCart, updateQty, toggleWishlist, isInWishlist } = useCart()
+  const { user } = useAuth()
   const [tab, setTab] = useState('description')
+  const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const product = PRODUCTS.find(p => p.id === id)
+  useEffect(() => {
+    const loadProduct = async () => {
+      setLoading(true)
+      // Try local data first
+      let found = PRODUCTS.find(p => p.id === id)
+      
+      if (!found) {
+        // Fetch from Supabase if not in local data
+        const dbProduct = await fetchProductById(id)
+        if (dbProduct) {
+          found = {
+            ...dbProduct,
+            name: dbProduct.title || dbProduct.name,
+            image: dbProduct.image_url || dbProduct.image
+          }
+        }
+      }
+      
+      setProduct(found)
+      setLoading(false)
+    }
+    
+    loadProduct()
+    window.scrollTo(0, 0);
+  }, [id])
+
   const related = PRODUCTS.filter(p => p.id !== id && p.category === product?.category).slice(0, 4)
-  const inWish = isInWishlist(product?.id)
+  const inWish = product ? isInWishlist(product.id) : false
 
-  useEffect(() => { window.scrollTo(0, 0) }, [id])
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FFF5E1' }}>
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          style={{ width: 40, height: 40, border: '4px solid rgba(200,150,12,0.1)', borderTopColor: '#C8960C', borderRadius: '50%' }} />
+      </div>
+    )
+  }
 
   if (!product) return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FFF5E1', paddingTop: 60 }}>
@@ -63,7 +100,7 @@ export default function ProductDetailPage() {
           {/* Info */}
           <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 11, color: '#C8960C', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 8 }}>
-              {product.category.replace('-', ' ')}
+              {(product?.category || 'Product').replace('-', ' ')}
             </p>
             <h1 style={{ fontFamily: '"Playfair Display",serif', fontSize: 'clamp(24px,4vw,36px)', fontWeight: 700, color: '#333', lineHeight: 1.2, marginBottom: 14 }}>
               {product.name}
@@ -75,39 +112,124 @@ export default function ProductDetailPage() {
               <span style={{ fontFamily: 'Poppins,sans-serif', fontSize: 13, fontWeight: 600, color: '#C8960C' }}>{product.rating}</span>
               <span style={{ fontFamily: 'Poppins,sans-serif', fontSize: 13, color: '#aaa' }}>({product.reviews} reviews)</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 6 }}>
-              <span style={{ fontFamily: '"Playfair Display",serif', fontSize: 36, fontWeight: 700, color: '#C8960C' }}>₹{product.price}</span>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 20 }}>
+              <span style={{ fontFamily: '"Playfair Display",serif', fontSize: 32, fontWeight: 700, color: '#C8960C' }}>
+                ₹{product.product_sizes?.length > 0 ? product.product_sizes[0].price : product.price}
+              </span>
               {product.originalPrice && (
-                <>
-                  <span style={{ fontSize: 18, color: '#ccc', textDecoration: 'line-through', fontFamily: 'Poppins,sans-serif' }}>₹{product.originalPrice}</span>
-                  <span style={{ fontSize: 13, background: '#fef3e2', color: '#8B6800', padding: '3px 10px', borderRadius: 14, fontWeight: 600, fontFamily: 'Poppins,sans-serif' }}>
-                    {Math.round((1 - product.price / product.originalPrice) * 100)}% off
-                  </span>
-                </>
+                <span style={{ fontSize: 20, color: '#aaa', textDecoration: 'line-through', fontFamily: 'Poppins,sans-serif', marginLeft: 8 }}>
+                  ₹{product.originalPrice}
+                </span>
               )}
+              <span style={{ fontSize: 13, color: '#888', fontFamily: 'Poppins,sans-serif', fontWeight: 500, marginLeft: 8 }}>
+                {product.product_sizes?.length > 0 ? 'Starting Price' : ''}
+              </span>
             </div>
-            {product.weight && <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 13, color: '#999', marginBottom: 18 }}>Weight: {product.weight}</p>}
-            <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 14, color: '#666', lineHeight: 1.75, marginBottom: 28 }}>
+
+            {/* Multi-Weight Selection Table (Grouped Logic) */}
+            {product.product_sizes && product.product_sizes.length > 0 ? (
+              <div style={{ marginBottom: 32, background: 'rgba(200,150,12,0.03)', borderRadius: 16, padding: '20px', border: '1px solid rgba(200,150,12,0.1)' }}>
+                <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 12, color: '#888', fontWeight: 600, textTransform: 'uppercase', marginBottom: 16, letterSpacing: '0.05em' }}>Choose Weights & Quantity:</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {product.product_sizes.map((size) => {
+                    const cartItem = items.find(i => i.product_id === product.id && i.selected_size === size.size_label);
+                    return (
+                      <div key={size.id} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: '#fff',
+                        padding: '12px 18px',
+                        borderRadius: 12,
+                        border: cartItem ? '1.5px solid #C8960C' : '1px solid rgba(200,150,12,0.12)',
+                        boxShadow: cartItem ? '0 4px 12px rgba(200,150,12,0.08)' : '0 2px 6px rgba(0,0,0,0.02)'
+                      }}>
+                        <div style={{ flex: 1 }}>
+                          <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 14, fontWeight: 700, color: cartItem ? '#C8960C' : '#333', marginBottom: 2 }}>{size.size_label}</p>
+                          <p style={{ fontFamily: '"Playfair Display",serif', fontSize: 16, fontWeight: 700, color: cartItem ? '#333' : '#C8960C' }}>₹{size.price}</p>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                          {cartItem ? (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#FFF5E1', padding: '6px 14px', borderRadius: 10, border: '1.5px solid rgba(200,150,12,0.3)' }}>
+                              <button onClick={() => updateQty(cartItem.id, cartItem.qty - 1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C8960C', display: 'flex' }}><Minus size={15} /></button>
+                              <span style={{ fontFamily: 'Poppins,sans-serif', fontSize: 16, fontWeight: 700, minWidth: 20, textAlign: 'center' }}>{cartItem.qty}</span>
+                              <button onClick={() => updateQty(cartItem.id, cartItem.qty + 1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C8960C', display: 'flex' }}><Plus size={15} /></button>
+                            </div>
+                          ) : (
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => {
+                                if (!user) {
+                                  toast.error('Please login to add items to cart');
+                                  navigate('/login', { state: { from: location } });
+                                  return;
+                                }
+                                addToCart(product, size, 1);
+                              }}
+                              style={{
+                                background: '#C8960C',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: 10,
+                                padding: '10px 20px',
+                                fontFamily: 'Poppins,sans-serif',
+                                fontSize: 14,
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                                boxShadow: '0 4px 10px rgba(200,150,12,0.2)'
+                              }}
+                            >
+                              <Plus size={16} /> Add
+                            </motion.button>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 28 }}>
+                {(() => {
+                  const cartItem = items.find(i => i.product_id === product.id && i.selected_size === 'Standard');
+                  return cartItem ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16, border: '1.5px solid #C8960C', borderRadius: 12, padding: '10px 24px', background: '#fff', flex: 1, justifyContent: 'center' }}>
+                      <button onClick={() => updateQty(cartItem.id, cartItem.qty - 1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C8960C', display: 'flex' }}><Minus size={18} /></button>
+                      <span style={{ fontFamily: 'Poppins,sans-serif', fontSize: 20, fontWeight: 700, minWidth: 32, textAlign: 'center' }}>{cartItem.qty}</span>
+                      <button onClick={() => updateQty(cartItem.id, cartItem.qty + 1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C8960C', display: 'flex' }}><Plus size={18} /></button>
+                    </div>
+                  ) : (
+                    <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                      onClick={() => {
+                        if (!user) {
+                          toast.error('Please login to add items to cart');
+                          navigate('/login', { state: { from: location } });
+                          return;
+                        }
+                        addToCart(product, null, 1);
+                      }}
+                      className="btn-primary"
+                      style={{ flex: 1, justifyContent: 'center', padding: '13px 0', fontSize: 15 }}>
+                      <ShoppingCart size={17} /> Add to Cart — ₹{product.price.toLocaleString()}
+                    </motion.button>
+                  );
+                })()}
+              </div>
+            )}
+
+            {product.weight && !product.product_sizes?.length && <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 13, color: '#999', marginBottom: 18 }}>Weight: {product.weight}</p>}
+
+            <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 14, color: '#666', lineHeight: 1.75, marginBottom: 20 }}>
               {product.description}
             </p>
 
-            {/* Qty + Cart */}
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 14 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, border: '1.5px solid rgba(200,150,12,0.3)', borderRadius: 10, padding: '9px 16px', background: '#fff' }}>
-                <button onClick={() => setQty(q => Math.max(1, q - 1))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C8960C', display: 'flex' }}><Minus size={16} /></button>
-                <span style={{ fontFamily: 'Poppins,sans-serif', fontSize: 16, fontWeight: 600, minWidth: 28, textAlign: 'center' }}>{qty}</span>
-                <button onClick={() => setQty(q => q + 1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C8960C', display: 'flex' }}><Plus size={16} /></button>
-              </div>
-              <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                onClick={() => addToCart(product, qty)}
-                className="btn-primary"
-                style={{ flex: 1, justifyContent: 'center', padding: '13px 0', fontSize: 15 }}>
-                <ShoppingCart size={17} /> Add to Cart — ₹{(product.price * qty).toLocaleString()}
-              </motion.button>
-            </div>
-
             <button onClick={() => toggleWishlist(product)}
-              style={{ width: '100%', padding: '11px 0', background: 'none', border: '1.5px solid rgba(200,150,12,0.28)', borderRadius: 10, color: inWish ? '#C8960C' : '#888', fontFamily: 'Poppins,sans-serif', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}>
+              style={{ width: '100%', padding: '11px 0', background: 'none', border: '1.5px solid rgba(200,150,12,0.28)', borderRadius: 10, color: inWish ? '#C8960C' : '#888', fontFamily: 'Poppins,sans-serif', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, marginBottom: 10 }}>
               <Heart size={15} fill={inWish ? '#C8960C' : 'none'} color={inWish ? '#C8960C' : '#888'} />
               {inWish ? 'Remove from Wishlist' : 'Add to Wishlist'}
             </button>

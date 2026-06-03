@@ -1,19 +1,33 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ShoppingCart, Menu, X, User, LogOut, Heart } from 'lucide-react'
-import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
+import { useCart } from '../context/CartContext'
 import { signOut } from '../services/supabase'
+import { ShoppingCart, Menu, X, User, LogOut, Heart, Package, LogIn } from 'lucide-react'
+import logoEk from '../assets/images/logo_ek.png'
 import toast from 'react-hot-toast'
+import { useRef } from 'react'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false)
+  const accountMenuRef = useRef(null)
   const { count, setIsOpen, wishlist } = useCart()
   const { user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(event.target)) {
+        setAccountMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 8)
@@ -21,7 +35,10 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', fn)
   }, [])
 
-  useEffect(() => setMobileOpen(false), [location.pathname])
+  useEffect(() => {
+    setMobileOpen(false)
+    setAccountMenuOpen(false)
+  }, [location.pathname])
 
   const handleSignOut = async () => {
     await signOut()
@@ -30,11 +47,12 @@ export default function Navbar() {
   }
 
   const isActive = path => location.pathname === path
-  const navBg = scrolled ? '#FFF5E1' : 'rgba(255,245,225,0.14)'
-  const navBorder = scrolled ? '1px solid rgba(200,150,12,0.15)' : '1px solid rgba(255,255,255,0.32)'
-  const navTextColor = scrolled ? '#4A2D06' : '#fff'
-  const navAccentColor = scrolled ? '#C8960C' : '#FDE68A'
-  const navTextShadow = scrolled ? 'none' : '0 2px 10px rgba(0,0,0,0.45)'
+  const isSolid = scrolled || location.pathname !== '/'
+  const navBg = isSolid ? '#FFF5E1' : 'rgba(255,245,225,0.14)'
+  const navBorder = isSolid ? '1px solid rgba(200,150,12,0.15)' : '1px solid rgba(255,255,255,0.32)'
+  const navTextColor = isSolid ? '#4A2D06' : '#fff'
+  const navAccentColor = isSolid ? '#C8960C' : '#FDE68A'
+  const navTextShadow = isSolid ? 'none' : '0 2px 10px rgba(0,0,0,0.45)'
 
   return (
     <>
@@ -47,21 +65,36 @@ export default function Navbar() {
           background: navBg,
           backdropFilter: 'blur(18px)',
           WebkitBackdropFilter: 'blur(18px)',
-          boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.08)' : 'none',
+          boxShadow: isSolid ? '0 4px 20px rgba(0,0,0,0.08)' : 'none',
           transition: 'all 0.4s ease',
           borderBottom: navBorder
         }}
       >
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(12px, 4vw, 16px)', minHeight: 70, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8, gap: 16 }}>
           {/* Logo */}
-          <Link to="/" style={{ textDecoration: 'none', flex: '1 1 0', minWidth: 0 }}>
-            <motion.div whileHover={{ scale: 1.02 }} style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
-              <span style={{ fontSize: 32, color: scrolled ? '#C8960C' : '#FDE68A' }}>🪈</span>
+          <Link
+            to="/"
+            onClick={() => {
+              if (location.pathname === '/') window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+            style={{ textDecoration: 'none', flex: '1 1 0', minWidth: 0 }}
+          >
+            <motion.div whileHover={{ scale: 1.02 }} style={{ display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 }}>
+              <img
+                src={logoEk}
+                alt="Logo"
+                style={{
+                  height: 48,
+                  width: 'auto',
+                  objectFit: 'contain',
+                  filter: isSolid ? 'brightness(1)' : 'brightness(1.1) drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+                }}
+              />
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontFamily: '"Playfair Display",serif', fontWeight: 700, fontSize: 20, color: scrolled ? '#C8960C' : '#fff', lineHeight: 1, letterSpacing: '0.05em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textShadow: navTextShadow }}>
+                <div style={{ fontFamily: '"Playfair Display",serif', fontWeight: 700, fontSize: 19, color: isSolid ? '#C8960C' : '#fff', lineHeight: 1, letterSpacing: '0.05em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textShadow: navTextShadow }}>
                   EAT KRISHNA
                 </div>
-                <div style={{ fontFamily: 'Poppins,sans-serif', fontSize: 10, color: scrolled ? '#A07808' : 'rgba(255,255,255,0.9)', opacity: 0.9, letterSpacing: '0.22em', textTransform: 'uppercase', marginTop: 2, textShadow: navTextShadow }}>
+                <div style={{ fontFamily: 'Poppins,sans-serif', fontSize: 10, color: isSolid ? '#A07808' : 'rgba(255,255,255,0.9)', opacity: 0.9, letterSpacing: '0.22em', textTransform: 'uppercase', marginTop: 2, textShadow: navTextShadow }}>
                   Handcrafted Devotion
                 </div>
               </div>
@@ -70,7 +103,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div style={{ gap: 40, alignItems: 'center' }} className="hidden md:flex">
-            {[['Home', '/'], ['Products', '/products']].map(([label, path]) => (
+            {[['Home', '/'], ['Products', '/products'], ['School & IT', '/school-it']].map(([label, path]) => (
               <Link key={path} to={path} style={{ textDecoration: 'none', position: 'relative', paddingBottom: 4, fontFamily: 'Poppins,sans-serif', fontSize: 14, fontWeight: isActive(path) ? 600 : 500, color: isActive(path) ? navAccentColor : navTextColor, textShadow: navTextShadow, transition: 'all 0.3s' }}>
                 {label}
                 {isActive(path) && <motion.div layoutId="nav-ul" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, background: '#C8960C', borderRadius: 1 }} />}
@@ -103,16 +136,51 @@ export default function Navbar() {
               )}
             </motion.button>
 
-            {/* Auth */}
-            {!user && (
-              <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
-                onClick={() => navigate('/login')}
-                style={{ padding: '10px 28px', borderRadius: 10, background: '#C8960C', color: '#1A0000', border: 'none', cursor: 'pointer', fontFamily: 'Poppins,sans-serif', fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', boxShadow: scrolled ? '0 8px 18px rgba(200,150,12,0.16)' : '0 8px 18px rgba(0,0,0,0.22)' }}
-                className="hidden md:flex"
-              >
-                Login
+            {/* Account Menu Toggle */}
+            <div style={{ position: 'relative' }} ref={accountMenuRef}>
+              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+                onClick={() => setAccountMenuOpen(!accountMenuOpen)}
+                style={{ background: isSolid ? 'rgba(200,150,12,0.1)' : 'rgba(255,255,255,0.1)', border: 'none', cursor: 'pointer', padding: 8, borderRadius: 10, display: 'flex', alignItems: 'center', gap: 6, color: navTextColor }}>
+                <Menu size={20} />
+                {user && <span style={{ fontSize: 13, fontWeight: 600 }} className="hidden lg:block">{user.email.split('@')[0]}</span>}
               </motion.button>
-            )}
+
+              <AnimatePresence>
+                {accountMenuOpen && (
+                  <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    style={{ position: 'absolute', top: 'calc(100% + 12px)', right: 0, width: 220, background: '#fff', borderRadius: 16, boxShadow: '0 20px 50px rgba(0,0,0,0.15)', border: '1px solid rgba(200,150,12,0.1)', overflow: 'hidden', padding: 8 }}>
+                    
+                    {user ? (
+                      <>
+                        <div style={{ padding: '12px 14px', borderBottom: '1px solid #f5f5f5', marginBottom: 6 }}>
+                          <div style={{ fontSize: 11, color: '#999', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>Logged in as</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: '#2C1200', wordBreak: 'break-all' }}>{user.email}</div>
+                        </div>
+                        <button onClick={() => navigate('/orders')} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '12px 14px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, color: '#555', cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'Poppins, sans-serif' }} className="hover:bg-amber-50">
+                          <Package size={18} color="#C8960C" />
+                          <span style={{ fontSize: 14, fontWeight: 500 }}>My Orders</span>
+                        </button>
+                        <button onClick={handleSignOut} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '12px 14px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, color: '#EF4444', cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'Poppins, sans-serif' }} className="hover:bg-red-50">
+                          <LogOut size={18} />
+                          <span style={{ fontSize: 14, fontWeight: 500 }}>Logout</span>
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button onClick={() => navigate('/login')} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '12px 14px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, color: '#555', cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'Poppins, sans-serif' }} className="hover:bg-amber-50">
+                          <LogIn size={18} color="#C8960C" />
+                          <span style={{ fontSize: 14, fontWeight: 500 }}>Login</span>
+                        </button>
+                        <button onClick={() => navigate('/orders')} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '12px 14px', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10, color: '#555', cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'Poppins, sans-serif' }} className="hover:bg-amber-50">
+                          <Package size={18} color="#C8960C" />
+                          <span style={{ fontSize: 14, fontWeight: 500 }}>Track Orders</span>
+                        </button>
+                      </>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Mobile toggle */}
             <motion.button whileTap={{ scale: 0.9 }}
@@ -131,7 +199,7 @@ export default function Navbar() {
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               style={{ background: '#FFF5E1', borderTop: '1px solid rgba(200,150,12,0.15)', overflow: 'hidden' }}>
               <div style={{ padding: '14px clamp(16px, 4vw, 20px) 18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-                {[['Home', '/'], ['Products', '/products'], ['Wishlist', '/wishlist']].map(([label, path]) => (
+                {[['Home', '/'], ['Products', '/products'], ['School & IT', '/school-it'], ['Wishlist', '/wishlist']].map(([label, path]) => (
                   <Link key={path} to={path} style={{ textDecoration: 'none', color: '#555', fontFamily: 'Poppins,sans-serif', fontSize: 15, padding: '6px 0', borderBottom: '1px solid rgba(200,150,12,0.08)' }}>{label}</Link>
                 ))}
                 {user

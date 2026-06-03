@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { CheckCircle, Home, ShoppingBag } from 'lucide-react'
 
 export default function OrderSuccessPage() {
   const navigate = useNavigate()
-  const orderNum = '#EK' + Date.now().toString().slice(-6)
+  const location = useLocation()
+  const realOrderId = location.state?.orderId
+  const orderNum = realOrderId ? `#EK${realOrderId}` : '#EK' + Date.now().toString().slice(-6)
 
   return (
     <div style={{ minHeight: '100vh', background: '#FFF5E1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px clamp(16px, 4vw, 24px) 40px' }}>

@@ -11,12 +11,13 @@ import prodKaju from '../assets/images/kaju_laddu_product.png'
 import catBesan from '../assets/images/besan_laddu_card.png'
 import catDryFruit from '../assets/images/dry_fruit_laddu_card.png'
 import catKaju from '../assets/images/kaju_laddu_card.png'
+import motichoorCard from '../assets/images/motichoor_laddu_card.png'
 
 import festiveBanner from '../assets/images/festive_banner.png'
 import familyMoment from '../assets/images/family_moment.png'
 import shopInterior from '../assets/images/shop_interior.png'
 
-export { festiveBanner, familyMoment, shopInterior }
+export { hero1, catBesan, motichoorCard, festiveBanner, familyMoment, shopInterior }
 
 export const PRODUCTS = [
   {

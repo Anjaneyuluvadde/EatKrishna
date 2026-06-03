@@ -1,12 +1,22 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ShoppingCart, Heart, Star, Eye } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
+import toast from 'react-hot-toast'
 
 export default function ProductCard({ product, index = 0 }) {
   const { addToCart, toggleWishlist, isInWishlist } = useCart()
+  const { user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const inWish = isInWishlist(product.id)
+
+  const [selectedSize, setSelectedSize] = useState(() => {
+    if (!product.product_sizes || product.product_sizes.length === 0) return null;
+    return product.product_sizes[1] || product.product_sizes[0];
+  })
 
   return (
     <motion.div
@@ -68,32 +78,40 @@ export default function ProductCard({ product, index = 0 }) {
         </div>
 
         {/* Price row */}
-<div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-  <div>
-    <span style={{ fontFamily: '"Playfair Display",serif', fontSize: 18, fontWeight: 700, color: '#C8960C' }}>
-      ₹{product.price}
-    </span>
-    {product.originalPrice && (
-      <span style={{ fontSize: 12, color: '#ccc', textDecoration: 'line-through', marginLeft: 6, fontFamily: 'Poppins,sans-serif' }}>
-        ₹{product.originalPrice}
-      </span>
-    )}
-  </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+          <div>
+            <span style={{ fontFamily: '"Playfair Display",serif', fontSize: 18, fontWeight: 700, color: '#C8960C' }}>
+              ₹{selectedSize ? selectedSize.price : product.price}
+            </span>
+            {product.originalPrice && (
+              <span style={{ fontSize: 12, color: '#ccc', textDecoration: 'line-through', marginLeft: 6, fontFamily: 'Poppins,sans-serif' }}>
+                ₹{product.originalPrice}
+              </span>
+            )}
+          </div>
 
-  {product.originalPrice && (
-    <span style={{ fontSize: 11, background: '#fef3e2', color: '#8B6800', padding: '2px 7px', borderRadius: 12, fontWeight: 600, fontFamily: 'Poppins,sans-serif' }}>
-      {Math.round((1 - product.price / product.originalPrice) * 100)}% off
-    </span>
-  )}
-</div>
+          {(product.discount || (product.originalPrice && !selectedSize)) && (
+            <span style={{ fontSize: 11, background: '#fef3e2', color: '#8B6800', padding: '2px 7px', borderRadius: 12, fontWeight: 600, fontFamily: 'Poppins,sans-serif' }}>
+              {product.discount || `${Math.round((1 - product.price / product.originalPrice) * 100)}% off`}
+            </span>
+          )}
+        </div>
 
-</div> {/* ✅ THIS WAS MISSING */}
+      </div>
 
-{/* Add to cart */}
-<div style={{ padding: '0 14px 14px' }}>
+      {/* Add to cart */}
+      <div style={{ padding: '0 14px 14px' }}>
         <motion.button
           whileHover={{ scale: 1.02, filter: 'brightness(1.1)' }} whileTap={{ scale: 0.97 }}
-          onClick={e => { e.stopPropagation(); addToCart(product) }}
+          onClick={e => { 
+            e.stopPropagation();
+            if (!user) {
+              toast.error('Please login to add items to cart');
+              navigate('/login', { state: { from: location } });
+              return;
+            }
+            addToCart(product, selectedSize);
+          }}
           style={{ width: '100%', padding: '11px 0', background: 'linear-gradient(135deg, #C8960C 0%, #A07808 100%)', color: '#fff', border: 'none', borderRadius: 8, fontFamily: 'Poppins,sans-serif', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, transition: 'all 0.3s ease', boxShadow: '0 4px 12px rgba(200,150,12,0.2)' }}
         >
           <ShoppingCart size={14} /> Add to Cart

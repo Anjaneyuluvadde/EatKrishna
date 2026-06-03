@@ -1,14 +1,40 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useSearchParams } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import ProductCard from '../components/ProductCard'
-import { PRODUCTS, CATEGORIES } from '../utils/data'
+import CustomizeLadduSection from '../components/CustomizeLadduSection'
+import CustomizeLaddu from '../components/CustomizeLaddu'
+import { CATEGORIES } from '../utils/data'
+import { fetchProducts } from '../services/productService'
 
 export default function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [active, setActive] = useState(searchParams.get('category') || 'all')
   const [search, setSearch] = useState('')
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [customizeLadduOpen, setCustomizeLadduOpen] = useState(false)
+
+  useEffect(() => {
+    const load = async () => {
+      const data = await fetchProducts()
+      // Normalize data to match ProductCard props structure
+      const normalized = (data || []).map(p => ({
+        ...p,
+        name: p.title || p.name,
+        image: p.image_url || p.image,
+        rating: p.rating || 4.5,
+        reviews: p.reviews || 0,
+        category: p.category || 'sweets',
+        originalPrice: p.old_price,
+        discount: p.discount
+      }))
+      setProducts(normalized)
+      setLoading(false)
+    }
+    load()
+  }, [])
 
   useEffect(() => {
     const cat = searchParams.get('category')
@@ -21,8 +47,9 @@ export default function ProductsPage() {
     else setSearchParams({ category: id })
   }
 
-  const filtered = PRODUCTS
-    .filter(p => active === 'all' || p.category === active)
+  const normalize = (s) => (s || '').toLowerCase().trim().replace(/\s+/g, '-').replace(/s$/, '')
+  const filtered = products
+    .filter(p => active === 'all' || normalize(p.category) === normalize(active))
     .filter(p => !search || p.name.toLowerCase().includes(search.toLowerCase()))
 
   return (
@@ -104,7 +131,12 @@ export default function ProductsPage() {
         </p>
 
         {/* Grid — 4 columns matching screenshot */}
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '100px 0' }}>
+            <div style={{ width: 44, height: 44, border: '3px solid #EAEAEA', borderTopColor: '#C1923F', borderRadius: '50%', margin: '0 auto', animation: 'spin 1s linear infinite' }} />
+            <p style={{ fontFamily: 'Poppins,sans-serif', color: '#999', marginTop: 16 }}>Loading fresh delicacies...</p>
+          </div>
+        ) : filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 0' }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
             <p style={{ fontFamily: '"Playfair Display",serif', fontSize: 22, color: '#999' }}>
@@ -123,6 +155,16 @@ export default function ProductsPage() {
           </div>
         )}
       </div>
+
+      {/* Customize Section */}
+      <div style={{ paddingBottom: 64 }}>
+        <CustomizeLadduSection onOpen={() => setCustomizeLadduOpen(true)} />
+      </div>
+
+      {/* Modal */}
+      <AnimatePresence>
+        <CustomizeLaddu isOpen={customizeLadduOpen} onClose={() => setCustomizeLadduOpen(false)} />
+      </AnimatePresence>
     </div>
   )
 }

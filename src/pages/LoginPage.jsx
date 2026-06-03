@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight } from 'lucide-react'
-import { signIn, signUp } from '../services/supabase'
+import { signIn, signUp, supabase } from '../services/supabase'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
@@ -11,6 +11,8 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', password: '' })
   const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/'
 
   const onChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
@@ -23,12 +25,28 @@ export default function LoginPage() {
         const { error } = await signIn(form.email, form.password)
         if (error) throw error
         toast.success('Welcome back! 🙏')
-        navigate('/')
+        navigate(from, { replace: true })
       } else {
-        const { error } = await signUp(form.email, form.password)
+        const { data, error } = await signUp(form.email, form.password)
         if (error) throw error
-        toast.success('Account created! Check your email.')
-        navigate('/')
+
+        const user = data.user
+        if (user) {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert([
+              {
+                id: user.id,
+                full_name: form.name,
+                email: form.email,
+              },
+            ])
+
+          if (profileError) throw profileError
+        }
+
+        toast.success('Account created! 🙏')
+        navigate(from, { replace: true })
       }
     } catch (err) {
       toast.error(err.message || 'Something went wrong')

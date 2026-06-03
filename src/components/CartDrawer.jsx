@@ -2,9 +2,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Plus, Minus, Trash2, ShoppingBag } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useNavigate } from 'react-router-dom'
+import customCardBanner from '../assets/images/custom_laddu_banner.png'
 
 export default function CartDrawer() {
-  const { items, isOpen, setIsOpen, removeFromCart, updateQty, total } = useCart()
+  const { items, isOpen, setIsOpen, removeFromCart, updateQty, total, updateItemSize } = useCart()
   const navigate = useNavigate()
 
   return (
@@ -75,8 +76,17 @@ export default function CartDrawer() {
                         border: '1px solid rgba(200,150,12,0.1)',
                       }}
                     >
-                      <img src={item.image} alt={item.name}
-                        style={{ width: 60, height: 60, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
+                      {(item.image || item.type === 'customized') && (
+                        <img
+                          src={
+                            item.type === 'customized'
+                              ? customCardBanner
+                              : (item.image || '').replace('http://', 'https://')
+                          }
+                          alt={item.name || 'Customized Laddu'}
+                          style={{ width: 60, height: 60, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }}
+                        />
+                      )}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{
                           fontFamily: 'Poppins,sans-serif', fontSize: 13, fontWeight: 500,
@@ -88,6 +98,11 @@ export default function CartDrawer() {
                         <p style={{ fontFamily: '"Playfair Display",serif', fontSize: 14, color: '#C8960C', fontWeight: 700 }}>
                           ₹{item.price}
                         </p>
+
+                        {/* Size selection hidden in mini cart */}
+                        <div className="selected-size-text">
+                          Selected: {item.selected_size}
+                        </div>
                         {/* Qty controls */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
                           <button onClick={() => updateQty(item.id, item.qty - 1)}

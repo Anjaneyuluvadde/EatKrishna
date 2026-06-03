@@ -11,6 +11,7 @@ import Navbar from './components/Navbar'
 import CartDrawer from './components/CartDrawer'
 import Footer from './components/Footer'
 import FloatingChat from './components/FloatingChat'
+import ScrollToTop from './components/ScrollToTop'
 
 import HomePage from './pages/HomePage'
 import ProductsPage from './pages/ProductsPage'
@@ -20,6 +21,8 @@ import CheckoutPage from './pages/CheckoutPage'
 import OrderSuccessPage from './pages/OrderSuccessPage'
 import LoginPage from './pages/LoginPage'
 import WishlistPage from './pages/WishlistPage'
+import SchoolAndIT from './pages/SchoolAndIT'
+import OrdersPage from './pages/OrdersPage'
 
 function PageWrap({ children }) {
   return (
@@ -33,6 +36,7 @@ function AppRoutes() {
   const location = useLocation()
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <CartDrawer />
       <AnimatePresence mode="wait">
@@ -45,6 +49,8 @@ function AppRoutes() {
           <Route path="/order-success" element={<PageWrap><OrderSuccessPage /></PageWrap>} />
           <Route path="/login" element={<PageWrap><LoginPage /></PageWrap>} />
           <Route path="/wishlist" element={<PageWrap><WishlistPage /></PageWrap>} />
+          <Route path="/school-it" element={<PageWrap><SchoolAndIT /></PageWrap>} />
+          <Route path="/orders" element={<PageWrap><OrdersPage /></PageWrap>} />
           <Route path="*" element={
             <PageWrap>
               <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FFF5E1', textAlign: 'center', paddingTop: 60 }}>
