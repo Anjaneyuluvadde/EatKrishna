@@ -14,7 +14,7 @@ export default function Footer() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
               <img src={logoEk} alt="EK Logo" style={{ height: 44, width: 'auto', objectFit: 'contain', filter: 'brightness(1.1)' }} />
               <h3 style={{ fontFamily: '"Playfair Display",serif', fontSize: 24, fontWeight: 700, color: '#C8960C', marginBottom: 0 }}>
-                EAT KRISHNA
+                Kbite
               </h3>
             </div>
             <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 13, color: 'rgba(255,245,225,0.6)', lineHeight: 1.7 }}>
@@ -39,7 +39,7 @@ export default function Footer() {
             <h4 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 14, fontWeight: 600, color: '#C8960C', marginBottom: 14 }}>
               Contact
             </h4>
-            {['📞 +91 98765 43210', '📧 hello@eatkrishna.in', '📍 Vrindavan, UP 281121'].map(t => (
+            {['📞 +91 98765 43210', '📧 hello@kbite.in', '📍 Vrindavan, UP 281121'].map(t => (
               <p key={t} style={{ fontFamily: 'Poppins,sans-serif', fontSize: 13, color: 'rgba(255,245,225,0.6)', marginBottom: 8 }}>
                 {t}
               </p>
@@ -48,7 +48,7 @@ export default function Footer() {
         </div>
         <div style={{ borderTop: '1px solid rgba(200,150,12,0.2)', paddingTop: 20, textAlign: 'center' }}>
           <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 12, color: 'rgba(255,245,225,0.35)' }}>
-            © {new Date().getFullYear()} EAT KRISHNA. All rights reserved. FSSAI Certified | Made in India 🇮🇳
+            © {new Date().getFullYear()} Kbite. All rights reserved. FSSAI Certified | Made in India 🇮🇳
           </p>
         </div>
       </div>

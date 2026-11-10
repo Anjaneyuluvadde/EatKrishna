@@ -216,7 +216,7 @@ const OrdersPage = () => {
               <PackageOpen size={48} color="#C8960C" />
             </div>
             <h3 style={{ fontSize: 24, fontWeight: 700, color: '#2C1200', marginBottom: 12 }}>No orders yet</h3>
-            <p style={{ color: '#666', marginBottom: 32 }}>Your journey with EatKrishna starts with your first order.</p>
+            <p style={{ color: '#666', marginBottom: 32 }}>Your journey with Kbite starts with your first order.</p>
             <Link to="/products" className="btn-primary" style={{ textDecoration: 'none' }}>Start Shopping</Link>
           </motion.div>
         ) : (

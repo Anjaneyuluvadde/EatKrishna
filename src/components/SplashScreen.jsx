@@ -97,7 +97,7 @@ export default function SplashScreen({ onDone }) {
             lineHeight: 1.1,
           }}
         >
-          EAT KRISHNA
+          Kbite
         </motion.h1>
 
         {/* Tagline */}

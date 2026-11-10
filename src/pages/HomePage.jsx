@@ -68,7 +68,7 @@ function Hero({ onOpen }) {
                 lineHeight: 1.1, letterSpacing: '-0.01em', marginBottom: 24,
                 textShadow: '0 4px 15px rgba(0,0,0,0.4)'
               }}>
-                EatKrishna
+                Kbite
               </h1>
               <p style={{
                 fontFamily: 'Poppins,sans-serif', fontSize: 'clamp(15px,2.5vw,18px)', color: 'rgba(255,245,225,0.9)',
@@ -364,7 +364,7 @@ function Newsletter() {
         <div style={{ marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14 }}>
           <img src={logoEk} alt="EK Logo" style={{ height: 56, width: 'auto', objectFit: 'contain', filter: 'brightness(1.2)' }} />
           <h2 style={{ fontFamily: '"Playfair Display",serif', fontSize: 36, fontWeight: 700, color: '#FFF5E1', marginBottom: 0 }}>
-            Eat<span style={{ color: '#C8960C' }}>Krishna</span>
+            K<span style={{ color: '#C8960C' }}>bite</span>
           </h2>
         </div>
         <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 14, color: 'rgba(255,245,225,0.55)', marginBottom: 28 }}>
@@ -437,7 +437,7 @@ export default function HomePage() {
               <img src={shopInterior} alt="Our Luxury Shop" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-              <SH label="Visit Us" title="Experience" gold="Luxury" sub="Step into the world of EatKrishna, where tradition meets modern luxury. Visit our boutique outlets for a sensory journey through India's finest delicacies." />
+              <SH label="Visit Us" title="Experience" gold="Luxury" sub="Step into the world of Kbite, where tradition meets modern luxury. Visit our boutique outlets for a sensory journey through India's finest delicacies." />
               <button className="btn-primary" style={{ padding: '12px 32px' }}>Find a Store near you</button>
             </motion.div>
           </div>

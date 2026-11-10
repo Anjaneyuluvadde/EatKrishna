@@ -1,4 +1,4 @@
-# 🪈 EAT KRISHNA — Premium Indian Sweets E-Commerce
+# 🪈 Kbite — Premium Indian Sweets E-Commerce
 
 A fully working React + Vite e-commerce website for a premium Indian sweets brand.
 Works completely out of the box — no backend needed for demo.

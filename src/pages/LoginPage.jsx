@@ -105,7 +105,7 @@ export default function LoginPage() {
               fontFamily: '"Playfair Display",serif', fontWeight: 700,
               fontSize: 22, color: '#C8960C', letterSpacing: '0.04em', marginBottom: 4,
             }}>
-              EAT KRISHNA
+              Kbite
             </h1>
             <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 13, color: '#aaa' }}>
               {mode === 'login' ? 'Welcome back!' : 'Create your account'}

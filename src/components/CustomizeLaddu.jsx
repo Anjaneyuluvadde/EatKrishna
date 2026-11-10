@@ -362,7 +362,7 @@ export default function CustomizeLaddu({ isOpen, onClose }) {
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
             <h1 style={{ fontFamily: '"Playfair Display",serif', fontSize: 28, fontWeight: 700, color: '#1A0000', margin: 0 }}>
-              Krishna Special Laddu
+              Kbite Special Laddu
             </h1>
             <button onClick={() => { onClose(); resetForm(); }} style={{ background: 'none', border: 'none', fontSize: 28, cursor: 'pointer', color: '#9CA3AF', padding: 4 }}>
               ✕

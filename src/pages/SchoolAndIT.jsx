@@ -88,7 +88,7 @@ const SchoolAndIT = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               style={{ fontSize: 'clamp(16px, 1.2vw, 20px)', color: 'rgba(255,255,255,0.9)', marginBottom: 40, lineHeight: 1.6, fontFamily: 'Poppins, sans-serif' }}
             >
-              EatKrishna brings nutritious dry fruit bars, protein-rich chocolates, and healthy snacks for growing children and busy professionals.
+              Kbite brings nutritious dry fruit bars, protein-rich chocolates, and healthy snacks for growing children and busy professionals.
             </motion.p>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -117,10 +117,10 @@ const SchoolAndIT = () => {
                 Healthy Snack for <span className="gold">Growing Children</span>
               </h2>
               <p style={{ color: '#4A2D06', lineHeight: 1.8, marginBottom: 24, fontSize: 17 }}>
-                EatKrishna provides specially made dry fruit bars and chocolates for school children. Each bar contains 80% premium dry fruits and 20% rich chocolate, making it much healthier than regular chocolates available in the market.
+                Kbite provides specially made dry fruit bars and chocolates for school children. Each bar contains 80% premium dry fruits and 20% rich chocolate, making it much healthier than regular chocolates available in the market.
               </p>
               <p style={{ color: '#4A2D06', lineHeight: 1.8, marginBottom: 32, fontSize: 17 }}>
-                Unlike other chocolate brands that contain high sugar and artificial ingredients, EatKrishna products are made with almonds, cashews, dates, raisins, pistachios, and natural cocoa. They give quick energy, better focus, and support healthy growth.
+                Unlike other chocolate brands that contain high sugar and artificial ingredients, Kbite products are made with almonds, cashews, dates, raisins, pistachios, and natural cocoa. They give quick energy, better focus, and support healthy growth.
               </p>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -197,7 +197,7 @@ const SchoolAndIT = () => {
           <motion.div {...fadeInUp} style={{ textAlign: 'center', marginBottom: 60 }}>
             <span className="section-label" style={{ color: '#C8960C' }}>Why Choose Us</span>
             <h2 className="section-title" style={{ color: '#fff', fontSize: 'clamp(32px, 3.5vw, 42px)' }}>
-              EatKrishna Better Than <span className="gold">Regular Chocolates</span>
+              Kbite Better Than <span className="gold">Regular Chocolates</span>
             </h2>
           </motion.div>
 
@@ -209,7 +209,7 @@ const SchoolAndIT = () => {
               <thead>
                 <tr style={{ background: 'rgba(200,150,12,0.1)' }}>
                   <th style={{ padding: '24px 32px', color: '#fff', fontWeight: 600, fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Comparison Features</th>
-                  <th style={{ padding: '24px 32px', color: '#C8960C', fontWeight: 800, fontSize: 18, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>EatKrishna</th>
+                  <th style={{ padding: '24px 32px', color: '#C8960C', fontWeight: 800, fontSize: 18, textAlign: 'center', fontFamily: '"Playfair Display", serif' }}>Kbite</th>
                   <th style={{ padding: '24px 32px', color: '#aaa', fontWeight: 500, fontSize: 14, textAlign: 'center' }}>Regular Brands</th>
                 </tr>
               </thead>
@@ -247,7 +247,7 @@ const SchoolAndIT = () => {
                 Healthy Energy for <span className="gold">Busy IT Professionals</span>
               </h2>
               <p style={{ color: '#4A2D06', lineHeight: 1.8, marginBottom: 24, fontSize: 17 }}>
-                IT employees often work under high pressure, skip meals, and do not follow a proper diet. EatKrishna helps them stay active and energetic with healthy protein bars, dark chocolate dry fruit bars, mixed dry fruits, and nutritious snacks.
+                IT employees often work under high pressure, skip meals, and do not follow a proper diet. Kbite helps them stay active and energetic with healthy protein bars, dark chocolate dry fruit bars, mixed dry fruits, and nutritious snacks.
               </p>
               <p style={{ color: '#4A2D06', lineHeight: 1.8, marginBottom: 32, fontSize: 17 }}>
                 These products help reduce tiredness, improve focus, and provide lasting energy during long working hours.
@@ -371,7 +371,7 @@ const SchoolAndIT = () => {
                 Looking for Bulk Orders for <br/> <span className="gold">Schools or IT Companies?</span>
               </h2>
               <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 18, maxWidth: 800, margin: '0 auto 48px', lineHeight: 1.6 }}>
-                Partner with EatKrishna to provide healthy and tasty snacks for students and employees. We offer customized packaging and corporate discounts.
+                Partner with Kbite to provide healthy and tasty snacks for students and employees. We offer customized packaging and corporate discounts.
               </p>
               <div style={{ display: 'flex', gap: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
                 <button className="btn-primary" style={{ padding: '18px 48px', fontSize: 16 }}>

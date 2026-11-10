@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 
 export default function FloatingChat() {
-  const url = `https://wa.me/919876543210?text=${encodeURIComponent('Hi! I want to order from EAT KRISHNA 🙏')}`
+  const url = `https://wa.me/919876543210?text=${encodeURIComponent('Hi! I want to order from Kbite 🙏')}`
 
   return (
     <motion.a

@@ -92,7 +92,7 @@ export default function Navbar() {
               />
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontFamily: '"Playfair Display",serif', fontWeight: 700, fontSize: 19, color: isSolid ? '#C8960C' : '#fff', lineHeight: 1, letterSpacing: '0.05em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textShadow: navTextShadow }}>
-                  EAT KRISHNA
+                  Kbite
                 </div>
                 <div style={{ fontFamily: 'Poppins,sans-serif', fontSize: 10, color: isSolid ? '#A07808' : 'rgba(255,255,255,0.9)', opacity: 0.9, letterSpacing: '0.22em', textTransform: 'uppercase', marginTop: 2, textShadow: navTextShadow }}>
                   Handcrafted Devotion

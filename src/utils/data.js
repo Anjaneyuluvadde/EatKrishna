@@ -1,4 +1,4 @@
-import hero1 from '../assets/images/eat_krishna_hero.png'
+import hero1 from '../assets/images/kbite_hero.png'
 import hero2 from '../assets/images/premium_banner.png'
 import hero3 from '../assets/images/kitchen_scene.png'
 
@@ -170,7 +170,7 @@ export const CATEGORY_DATA = {
 export const TESTIMONIALS = [
   { id: 1, name: 'Priya Sharma', city: 'Mumbai', rating: 5, text: 'The Kesar Ladoos are absolutely divine! The quality and freshness is unmatched. My entire family loved it.' },
   { id: 2, name: 'Rajesh Gupta', city: 'Delhi', rating: 5, text: 'Ordered the Festival Gift Box for Diwali. The packaging was gorgeous and quality exceptional. Highly recommend!' },
-  { id: 3, name: 'Ananya K.', city: 'Bengaluru', rating: 5, text: 'EAT KRISHNA has become our go-to for every festival. Healthy, delicious, and so beautifully packed.' },
+  { id: 3, name: 'Ananya K.', city: 'Bengaluru', rating: 5, text: 'Kbite has become our go-to for every festival. Healthy, delicious, and so beautifully packed.' },
   { id: 4, name: 'Vikram Patel', city: 'Ahmedabad', rating: 5, text: 'The Mysore Pak tasted exactly like what my grandmother used to make. Authentic, pure, and made with love.' },
 ]
 
